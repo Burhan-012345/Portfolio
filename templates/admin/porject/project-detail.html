@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project.title }} - Burhan Ahmed Portfolio</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Lightbox for images -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css">
+    
+    <style>
+        :root {
+            --pure-white: #ffffff;
+            --off-white: #f8f8f8;
+            --light-gray: #eaeaea;
+            --medium-gray: #cccccc;
+            --dark-gray: #666666;
+            --pure-black: #000000;
+            --shadow: 0 5px 20px rgba(0,0,0,0.03);
+            --shadow-hover: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--pure-white);
+            color: var(--pure-black);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Custom Scrollbar - Minimal */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--light-gray);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--pure-black);
+            border-radius: 0;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--dark-gray);
+        }
+        
+        /* Navigation */
+        .navbar {
+            background: var(--pure-white) !important;
+            border-bottom: 1px solid var(--light-gray);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            padding: 0.5rem 0;
+            box-shadow: var(--shadow);
+        }
+        
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--pure-black) !important;
+            letter-spacing: -0.5px;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand:hover {
+            opacity: 0.7;
+        }
+        
+        .nav-link {
+            color: var(--pure-black) !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--pure-black);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Project Header */
+        .project-header {
+            background: var(--pure-white);
+            padding: 120px 0 60px;
+            margin-bottom: 50px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .project-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--pure-black);
+            letter-spacing: -1px;
+            animation: fadeInUp 0.8s ease;
+        }
+        
+        .project-description {
+            font-size: 1.2rem;
+            color: var(--dark-gray);
+            max-width: 800px;
+            margin: 0 auto 30px;
+            animation: fadeInUp 0.8s ease 0.1s both;
+        }
+        
+        .project-meta {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+        
+        .project-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--dark-gray);
+            font-size: 0.95rem;
+        }
+        
+        .project-meta-item i {
+            color: var(--pure-black);
+            font-size: 1.1rem;
+        }
+        
+        .project-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            animation: fadeInUp 0.8s ease 0.3s both;
+        }
+        
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid var(--pure-black);
+        }
+        
+        .project-link.live {
+            background: var(--pure-black);
+            color: var(--pure-white);
+        }
+        
+        .project-link.live:hover {
+            background: var(--pure-white);
+            color: var(--pure-black);
+        }
+        
+        .project-link.github {
+            background: transparent;
+            color: var(--pure-black);
+            border: 1px solid var(--pure-black);
+        }
+        
+        .project-link.github:hover {
+            background: var(--pure-black);
+            color: var(--pure-white);
+        }
+        
+        /* Sections */
+        .section-container {
+            padding: 80px 0;
+            position: relative;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .section-container:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 50px;
+            text-align: center;
+            color: var(--pure-black);
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            letter-spacing: -0.5px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--pure-black);
+        }
+        
+        .part-row {
+            margin-bottom: 60px;
+            align-items: center;
+        }
+        
+        .part-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .part-image {
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .part-image:hover {
+            transform: scale(1.01);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .part-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .part-image:hover img {
+            transform: scale(1.02);
+        }
+        
+        .part-image .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .part-image:hover .image-overlay {
+            opacity: 1;
+        }
+        
+        .part-image .image-overlay i {
+            color: var(--pure-black);
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            border: 1px solid var(--pure-black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        
+        .part-image:hover .image-overlay i {
+            transform: scale(1);
+        }
+        
+        .part-content {
+            padding: 30px;
+            background: var(--off-white);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--light-gray);
+            transition: all 0.3s ease;
+        }
+        
+        .part-content:hover {
+            border-color: var(--pure-black);
+        }
+        
+        .part-content p {
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            line-height: 1.8;
+            margin: 0;
+        }
+        
+        .part-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: var(--pure-white);
+            color: var(--pure-black);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border: 1px solid var(--pure-black);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Project Navigation */
+        .project-navigation {
+            background: var(--pure-white);
+            padding: 30px 0;
+            border-top: 1px solid var(--light-gray);
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-link-project {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 25px;
+            background: var(--off-white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid var(--light-gray);
+            max-width: 300px;
+        }
+        
+        .nav-link-project:hover {
+            border-color: var(--pure-black);
+            background: var(--pure-white);
+        }
+        
+        .nav-link-project .nav-direction {
+            font-size: 0.85rem;
+            color: var(--dark-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .nav-link-project .nav-title {
+            color: var(--pure-black);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .nav-link-project i {
+            color: var(--pure-black);
+            font-size: 1.2rem;
+        }
+        
+        .nav-link-project.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        
+        .all-projects a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--dark-gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid transparent;
+        }
+        
+        .all-projects a:hover {
+            color: var(--pure-black);
+            border-bottom-color: var(--pure-black);
+        }
+        
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: var(--pure-white);
+            color: var(--pure-black);
+            border: 1px solid var(--pure-black);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .back-to-top a:hover {
+            background: var(--pure-black);
+            color: var(--pure-white);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--pure-white);
+            padding: 40px 0 20px;
+            margin-top: 50px;
+            text-align: center;
+            color: var(--dark-gray);
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .footer-social a {
+            color: var(--dark-gray);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-social a:hover {
+            color: var(--pure-black);
+        }
+        
+        .footer-copyright {
+            font-size: 0.9rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Loading Spinner */
+        .spinner-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--pure-white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--light-gray);
+            border-top-color: var(--pure-black);
+            border-radius: 0;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* No Image Placeholder */
+        .no-image-placeholder {
+            background: var(--off-white);
+            padding: 60px;
+            text-align: center;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .no-image-placeholder i {
+            font-size: 3rem;
+            color: var(--dark-gray);
+            margin-bottom: 15px;
+        }
+        
+        .no-image-placeholder p {
+            color: var(--dark-gray);
+            margin: 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .project-title {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .part-row {
+                margin-bottom: 30px;
+            }
+            
+            .part-content {
+                padding: 20px;
+                margin-top: 20px;
+            }
+            
+            .project-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .project-link {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-link-project {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .project-header {
+                padding: 100px 0 40px;
+            }
+            
+            .project-title {
+                font-size: 2rem;
+            }
+            
+            .project-description {
+                font-size: 1rem;
+            }
+            
+            .project-meta {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+            
+            .section-container {
+                padding: 50px 0;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+        
+        /* Print Styles */
+        @media print {
+            .navbar,
+            .project-navigation,
+            .back-to-top,
+            .footer {
+                display: none;
+            }
+            
+            .project-header {
+                padding: 50px 0;
+            }
+            
+            .part-image {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div class="spinner-wrapper" id="loadingSpinner">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">
+                <i class="fas fa-code mr-2"></i>Burhan Ahmed
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index') }}#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index') }}#projects">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index') }}#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Project Header -->
+    <header class="project-header">
+        <div class="container text-center">
+            <h1 class="project-title" data-aos="fade-up">{{ project.title }}</h1>
+            <p class="project-description" data-aos="fade-up" data-aos-delay="100">{{ project.description }}</p>
+            
+            <div class="project-meta" data-aos="fade-up" data-aos-delay="150">
+                <div class="project-meta-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>{{ project.created_at.strftime('%B %d, %Y') if project.created_at else 'Recent' }}</span>
+                </div>
+                <div class="project-meta-item">
+                    <i class="fas fa-layer-group"></i>
+                    <span>{{ sections|length }} Section{{ 's' if sections|length != 1 }}</span>
+                </div>
+                {% if project.is_featured %}
+                <div class="project-meta-item">
+                    <i class="fas fa-star"></i>
+                    <span>Featured</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="project-links" data-aos="fade-up" data-aos-delay="200">
+                {% if project.live_link %}
+                <a href="{{ project.live_link }}" target="_blank" rel="noopener noreferrer" class="project-link live">
+                    <i class="fas fa-external-link-alt"></i>
+                    Live Demo
+                </a>
+                {% endif %}
+                {% if project.github_link %}
+                <a href="{{ project.github_link }}" target="_blank" rel="noopener noreferrer" class="project-link github">
+                    <i class="fab fa-github"></i>
+                    View Code
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    
+    <!-- Project Sections -->
+    {% for section in sections %}
+    <section class="section-container" data-aos="fade-up">
+        <div class="container">
+            <h2 class="section-title">{{ section.section_title }}</h2>
+            
+            <!-- Section Content (Single Part with Image and Text) -->
+            <div class="row part-row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
+                    {% if section.image %}
+                    <a href="{{ url_for('static', filename=section.image) }}" data-lightbox="project-{{ project.id }}" data-title="{{ section.section_title }}">
+                        <div class="part-image">
+                            <img src="{{ url_for('static', filename=section.image) }}" alt="{{ section.section_title }}" class="img-fluid">
+                            <div class="image-overlay">
+                                <i class="fas fa-search-plus"></i>
+                            </div>
+                        </div>
+                    </a>
+                    {% else %}
+                    <div class="no-image-placeholder">
+                        <i class="fas fa-image"></i>
+                        <p>No image available</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="part-content">
+                        <div>
+                            <span class="part-badge">
+                                <i class="fas fa-info-circle mr-1"></i> Section {{ loop.index }}
+                            </span>
+                            {% if section.content %}
+                            <p>{{ section.content }}</p>
+                            {% else %}
+                            <p class="text-muted fst-italic">No content provided.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% else %}
+    <!-- No sections message -->
+    <section class="section-container">
+        <div class="container text-center py-5">
+            <div class="no-image-placeholder" style="padding: 80px;">
+                <i class="fas fa-puzzle-piece fa-4x mb-4"></i>
+                <h3 class="mb-3">No Sections Added</h3>
+                <p class="text-muted">This project doesn't have any sections yet.</p>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('project.edit_view', id=project.id) }}" class="btn btn-outline-dark mt-3">
+                    <i class="fas fa-edit mr-2"></i>Add Sections
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    {% endfor %}
+    
+    <!-- Project Navigation -->
+    <div class="project-navigation">
+        <div class="container">
+            <div class="nav-links">
+                <!-- Previous Project -->
+                <div>
+                    {% if prev_project %}
+                    <a href="{{ url_for('main.project_detail', project_id=prev_project.id) }}" class="nav-link-project">
+                        <i class="fas fa-arrow-left"></i>
+                        <div>
+                            <div class="nav-direction">Previous</div>
+                            <div class="nav-title">{{ prev_project.title }}</div>
+                        </div>
+                    </a>
+                    {% else %}
+                    <div class="nav-link-project disabled">
+                        <i class="fas fa-arrow-left"></i>
+                        <div>
+                            <div class="nav-direction">Previous</div>
+                            <div class="nav-title">None</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- All Projects Link -->
+                <div class="all-projects">
+                    <a href="{{ url_for('main.index') }}#projects">
+                        <i class="fas fa-th-large"></i>
+                        <span>All Projects</span>
+                    </a>
+                </div>
+                
+                <!-- Next Project -->
+                <div>
+                    {% if next_project %}
+                    <a href="{{ url_for('main.project_detail', project_id=next_project.id) }}" class="nav-link-project text-end">
+                        <div>
+                            <div class="nav-direction">Next</div>
+                            <div class="nav-title">{{ next_project.title }}</div>
+                        </div>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    {% else %}
+                    <div class="nav-link-project disabled text-end">
+                        <div>
+                            <div class="nav-direction">Next</div>
+                            <div class="nav-title">None</div>
+                        </div>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Back to Top Button -->
+    <div class="back-to-top" id="backToTop">
+        <a href="#" title="Back to Top">
+            <i class="fas fa-arrow-up"></i>
+        </a>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-social">
+                    <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                    <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-x-twitter"></i></a>
+                    <a href="#" target="_blank" rel="noopener noreferrer"><i class="far fa-envelope"></i></a>
+                </div>
+                <div class="footer-copyright">
+                    <p class="mb-0">
+                        © {{ now.year if now else '2024' }} Burhan Ahmed. 
+                        Built with <i class="fas fa-heart"></i> and Flask
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+        
+        // Hide loading spinner
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loadingSpinner').classList.add('fade-out');
+            }, 500);
+        });
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('mainNav');
+            const backToTop = document.getElementById('backToTop');
+            
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            
+            // Show/hide back to top button
+            if (window.scrollY > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+        
+        // Smooth scroll for back to top
+        document.querySelector('.back-to-top a').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Lightbox configuration
+        lightbox.option({
+            'resizeDuration': 200,
+            'wrapAround': true,
+            'albumLabel': 'Image %1 of %2',
+            'fadeDuration': 300,
+            'imageFadeDuration': 300
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') {
+                {% if prev_project %}
+                window.location.href = "{{ url_for('main.project_detail', project_id=prev_project.id) }}";
+                {% endif %}
+            } else if (e.key === 'ArrowRight') {
+                {% if next_project %}
+                window.location.href = "{{ url_for('main.project_detail', project_id=next_project.id) }}";
+                {% endif %}
+            }
+        });
+    </script>
+</body>
+</html>

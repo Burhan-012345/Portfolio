@@ -1,0 +1,375 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="h3 mb-4">Create New Project</h1>
+            
+            <form method="POST" enctype="multipart/form-data" id="projectForm" action="{{ url_for('project.create_view') }}">
+                {{ form.hidden_tag() if form.hidden_tag }}
+                
+                <!-- Project Details Card -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle mr-2"></i> Project Details
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="title" class="form-label">Project Title *</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="is_featured" class="form-label">Featured Project</label>
+                                <div class="form-check mt-2">
+                                    <input type="checkbox" class="form-check-input" id="is_featured" name="is_featured" value="y">
+                                    <label class="form-check-label" for="is_featured">Mark as featured (will send email notifications)</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Project Description *</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="live_link" class="form-label">Live Demo URL</label>
+                                <input type="url" class="form-control" id="live_link" name="live_link" placeholder="https://...">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="github_link" class="form-label">GitHub Repository URL</label>
+                                <input type="url" class="form-control" id="github_link" name="github_link" placeholder="https://github.com/...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sections Card -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-puzzle-piece mr-2"></i> Project Sections
+                        </div>
+                        <button type="button" class="btn btn-sm btn-success" onclick="addSection()">
+                            <i class="fas fa-plus"></i> Add Section
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="sections-container">
+                            <!-- Sections will be added here dynamically -->
+                        </div>
+                        
+                        <div class="text-muted text-center py-3" id="no-sections-message">
+                            <i class="fas fa-arrow-up"></i> Click "Add Section" to start adding project sections
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Form Actions -->
+                <div class="mb-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Create Project
+                    </button>
+                    <a href="{{ url_for('project.index_view') }}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Section Template (Hidden) - Single Part Version -->
+<template id="section-template">
+    <div class="section-item card mb-3">
+        <div class="card-header bg-light">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <strong>Section <span class="section-number"></span></strong>
+                </div>
+                <div class="col-md-6 text-right">
+                    <button type="button" class="btn btn-sm btn-danger" onclick="removeSection(this)">
+                        <i class="fas fa-trash"></i> Remove
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <input type="hidden" name="section_id[]" class="section-id" value="new">
+            <input type="hidden" name="section_order[]" class="section-order">
+            
+            <div class="mb-3">
+                <label class="form-label">Section Title</label>
+                <input type="text" class="form-control section-title" name="section_title[]" required>
+            </div>
+            
+            <!-- Single Part Content -->
+            <div class="mb-3">
+                <label class="form-label">Content</label>
+                <textarea class="form-control section-content" name="section_content[]" rows="4"></textarea>
+            </div>
+            
+            <!-- Single Image Upload -->
+            <div class="mb-3">
+                <label class="form-label">Image</label>
+                <input type="file" class="form-control-file section-image" name="section_image_{index}" accept="image/*">
+                <small class="text-muted">Allowed: PNG, JPG, JPEG, WEBP, GIF (Max 5MB)</small>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style>
+.section-item {
+    transition: all 0.3s ease;
+}
+
+.section-item:hover {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.form-control-color {
+    width: 100%;
+    height: 38px;
+    padding: 0.375rem;
+}
+
+.font-monospace {
+    font-family: 'Courier New', monospace;
+}
+
+.btn-primary {
+    background: #000;
+    border: 1px solid #000;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #333;
+    border-color: #333;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    border: 1px solid #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.btn-success {
+    background: #28a745;
+    border: 1px solid #28a745;
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
+.btn-danger {
+    background: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.btn-info {
+    background: #17a2b8;
+    border: 1px solid #17a2b8;
+    color: white;
+}
+
+.btn-info:hover {
+    background: #138496;
+}
+
+.btn-outline-primary {
+    color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    background: #007bff;
+    color: white;
+}
+
+.card-header.bg-light {
+    background-color: #f8f9fa !important;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.form-control:focus {
+    border-color: #000;
+    box-shadow: 0 0 0 0.2rem rgba(0,0,0,0.1);
+}
+
+/* Alert styles */
+.alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.25rem;
+}
+
+.alert-info code {
+    background: rgba(0,0,0,0.05);
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+</style>
+
+<script>
+let sectionCount = 0;
+
+function addSection() {
+    const template = document.getElementById('section-template');
+    const clone = template.content.cloneNode(true);
+    const container = document.getElementById('sections-container');
+    
+    // Update section number
+    sectionCount++;
+    const sectionNumber = clone.querySelector('.section-number');
+    sectionNumber.textContent = sectionCount;
+    
+    // Update order
+    const orderInput = clone.querySelector('.section-order');
+    orderInput.value = sectionCount - 1;
+    
+    // Update image input name with index
+    const sectionImage = clone.querySelector('.section-image');
+    sectionImage.name = `section_image_${sectionCount - 1}`;
+    
+    // Add to container
+    container.appendChild(clone);
+    
+    // Hide no sections message
+    document.getElementById('no-sections-message').style.display = 'none';
+}
+
+function removeSection(button) {
+    if (confirm('Are you sure you want to remove this section?')) {
+        const sectionItem = button.closest('.section-item');
+        sectionItem.remove();
+        
+        // Renumber remaining sections
+        renumberSections();
+        
+        // Show no sections message if empty
+        const container = document.getElementById('sections-container');
+        if (container.children.length === 0) {
+            document.getElementById('no-sections-message').style.display = 'block';
+            sectionCount = 0;
+        }
+    }
+}
+
+function renumberSections() {
+    const sections = document.querySelectorAll('.section-item');
+    sectionCount = sections.length;
+    
+    sections.forEach((section, index) => {
+        // Update section number display
+        const sectionNumber = section.querySelector('.section-number');
+        if (sectionNumber) {
+            sectionNumber.textContent = index + 1;
+        }
+        
+        // Update order input
+        const orderInput = section.querySelector('.section-order');
+        if (orderInput) {
+            orderInput.value = index;
+        }
+        
+        // Update image input name
+        const sectionImage = section.querySelector('.section-image');
+        if (sectionImage) {
+            sectionImage.name = `section_image_${index}`;
+        }
+    });
+}
+
+// Form validation before submit
+document.querySelector('form').addEventListener('submit', function(e) {
+    const sections = document.querySelectorAll('.section-item');
+    let isValid = true;
+    
+    if (sections.length === 0) {
+        alert('Please add at least one section');
+        e.preventDefault();
+        return;
+    }
+    
+    sections.forEach((section) => {
+        const title = section.querySelector('.section-title');
+        if (!title.value.trim()) {
+            title.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            title.classList.remove('is-invalid');
+        }
+    });
+    
+    if (!isValid) {
+        e.preventDefault();
+        alert('Please fill in all section titles');
+    }
+});
+
+// Image preview on file select
+document.addEventListener('change', function(e) {
+    if (e.target.classList.contains('section-image')) {
+        const file = e.target.files[0];
+        if (file) {
+            // Check file size
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be less than 5MB');
+                e.target.value = '';
+                return;
+            }
+            
+            // Check file type
+            const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+            if (!validTypes.includes(file.type)) {
+                alert('Invalid file type. Allowed: JPG, PNG, WEBP, GIF');
+                e.target.value = '';
+                return;
+            }
+            
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const sectionItem = event.target.closest('.section-item');
+                let preview = sectionItem.querySelector('.image-preview');
+                
+                if (!preview) {
+                    preview = document.createElement('div');
+                    preview.className = 'image-preview mt-2';
+                    event.target.closest('.mb-3').appendChild(preview);
+                }
+                
+                preview.innerHTML = `
+                    <div class="d-inline-block position-relative">
+                        <img src="${e.target.result}" class="img-thumbnail" style="max-height: 100px;">
+                        <small class="text-success d-block mt-1">New image selected</small>
+                    </div>
+                `;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+});
+
+// Initialize with one section
+document.addEventListener('DOMContentLoaded', function() {
+    addSection(); // Start with one section
+});
+</script>
+{% endblock %}
