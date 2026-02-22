@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+
+{% block title %}Projects - Burhan Ahmed{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header fade-in">
+    <div class="container">
+        <h1 class="page-title">All Projects</h1>
+        <p class="page-subtitle">A collection of my work and experiments</p>
+    </div>
+</section>
+
+<!-- Projects Grid -->
+<section class="projects-page-section">
+    <div class="container">
+        {% if projects %}
+        <div class="projects-grid large">
+            {% for project in projects %}
+            <div class="project-card fade-up" data-aos="fade-up" data-aos-delay="{{ loop.index * 50 }}">
+                <div class="project-card-inner">
+                    {% if project.sections and project.sections[0] and project.sections[0].image %}
+                    <div class="project-card-image">
+                        <img src="/static/{{ project.sections[0].image }}" alt="{{ project.title }}" loading="lazy">
+                    </div>
+                    {% endif %}
+                    <div class="project-card-content">
+                        <div class="project-card-header">
+                            <h3 class="project-card-title">{{ project.title }}</h3>
+                            {% if project.is_featured %}
+                            <span class="featured-badge">Featured</span>
+                            {% endif %}
+                        </div>
+                        <p class="project-card-description">{{ project.description[:200] }}{% if project.description|length > 200 %}...{% endif %}</p>
+                        <div class="project-card-footer">
+                            <a href="{{ url_for('main.project_detail', project_id=project.id) }}" class="btn magnetic">View Project</a>
+                            <div class="project-links">
+                                {% if project.live_link %}
+                                <a href="{{ project.live_link }}" target="_blank" class="icon-link" aria-label="Live Demo">
+                                    <svg class="icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                    </svg>
+                                </a>
+                                {% endif %}
+                                {% if project.github_link %}
+                                <a href="{{ project.github_link }}" target="_blank" class="icon-link" aria-label="GitHub">
+                                    <svg class="icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                                    </svg>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if pagination.pages > 1 %}
+        <div class="pagination">
+            {% if pagination.has_prev %}
+            <a href="{{ url_for('main.projects', page=pagination.prev_num) }}" class="pagination-prev">
+                <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Previous
+            </a>
+            {% endif %}
+            
+            <div class="pagination-numbers">
+                {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        {% if page_num == pagination.page %}
+                        <span class="pagination-number current">{{ page_num }}</span>
+                        {% else %}
+                        <a href="{{ url_for('main.projects', page=page_num) }}" class="pagination-number">{{ page_num }}</a>
+                        {% endif %}
+                    {% else %}
+                        <span class="pagination-ellipsis">&hellip;</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            
+            {% if pagination.has_next %}
+            <a href="{{ url_for('main.projects', page=pagination.next_num) }}" class="pagination-next">
+                Next
+                <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <h3>No projects yet</h3>
+            <p>Check back soon for new projects!</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+/* Override page header styles - remove purple gradient */
+.page-header {
+    padding: 120px 0 60px;
+    text-align: center;
+    background: #ffffff;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.dark-mode .page-header {
+    background: #0a0a0a;
+    border-bottom-color: #2a2a2a;
+}
+
+.page-title {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #1a1a1a;
+}
+
+.dark-mode .page-title {
+    color: #ffffff;
+}
+
+.page-subtitle {
+    font-size: 1.2rem;
+    color: #666666;
+}
+
+.dark-mode .page-subtitle {
+    color: #aaaaaa;
+}
+
+/* Project card styles */
+.projects-page-section {
+    padding: 80px 0;
+    background: #f8f8f8;
+}
+
+.dark-mode .projects-page-section {
+    background: #111111;
+}
+
+.project-card {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.project-card-inner {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #eaeaea;
+}
+
+.dark-mode .project-card-inner {
+    background: #1a1a1a;
+    border-color: #2a2a2a;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.project-card-inner:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.dark-mode .project-card-inner:hover {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.project-card-image {
+    height: 220px;
+    overflow: hidden;
+    background: #f0f0f0;
+}
+
+.dark-mode .project-card-image {
+    background: #222222;
+}
+
+.project-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.project-card-inner:hover .project-card-image img {
+    transform: scale(1.05);
+}
+
+.project-card-content {
+    padding: 25px;
+}
+
+.project-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.project-card-title {
+    font-size: 1.5rem;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.dark-mode .project-card-title {
+    color: #ffffff;
+}
+
+.featured-badge {
+    background: #1a1a1a;
+    color: #ffffff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dark-mode .featured-badge {
+    background: #ffffff;
+    color: #1a1a1a;
+}
+
+.project-card-description {
+    color: #666666;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.dark-mode .project-card-description {
+    color: #aaaaaa;
+}
+
+.project-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 24px;
+    background: #1a1a1a;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.dark-mode .btn {
+    background: #ffffff;
+    color: #1a1a1a;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.project-links {
+    display: flex;
+    gap: 12px;
+}
+
+.icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    color: #1a1a1a;
+    transition: all 0.3s ease;
+    border: 1px solid #eaeaea;
+}
+
+.dark-mode .icon-link {
+    background: #222222;
+    color: #ffffff;
+    border-color: #333333;
+}
+
+.icon-link:hover {
+    background: #1a1a1a;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.dark-mode .icon-link:hover {
+    background: #ffffff;
+    color: #1a1a1a;
+}
+
+.icon-link .icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Pagination styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 50px;
+    padding: 20px 0;
+}
+
+.pagination-prev,
+.pagination-next {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #ffffff;
+    color: #1a1a1a;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid #eaeaea;
+}
+
+.dark-mode .pagination-prev,
+.dark-mode .pagination-next {
+    background: #1a1a1a;
+    color: #ffffff;
+    border-color: #333333;
+}
+
+.pagination-prev:hover,
+.pagination-next:hover {
+    background: #1a1a1a;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.dark-mode .pagination-prev:hover,
+.dark-mode .pagination-next:hover {
+    background: #ffffff;
+    color: #1a1a1a;
+}
+
+.pagination-numbers {
+    display: flex;
+    gap: 8px;
+}
+
+.pagination-number {
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #1a1a1a;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid #eaeaea;
+}
+
+.dark-mode .pagination-number {
+    background: #1a1a1a;
+    color: #ffffff;
+    border-color: #333333;
+}
+
+.pagination-number:hover,
+.pagination-number.current {
+    background: #1a1a1a;
+    color: #ffffff;
+}
+
+.dark-mode .pagination-number:hover,
+.dark-mode .pagination-number.current {
+    background: #ffffff;
+    color: #1a1a1a;
+}
+
+.pagination-ellipsis {
+    padding: 10px 8px;
+    color: #666666;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #eaeaea;
+}
+
+.dark-mode .empty-state {
+    background: #1a1a1a;
+    border-color: #333333;
+}
+
+.empty-state h3 {
+    color: #1a1a1a;
+    margin-bottom: 10px;
+}
+
+.dark-mode .empty-state h3 {
+    color: #ffffff;
+}
+
+.empty-state p {
+    color: #666666;
+}
+
+.dark-mode .empty-state p {
+    color: #aaaaaa;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2.5rem;
+    }
+    
+    .projects-grid.large {
+        grid-template-columns: 1fr;
+    }
+    
+    .pagination {
+        flex-direction: column;
+    }
+    
+    .pagination-numbers {
+        order: -1;
+    }
+}
+</style>
+{% endblock %}

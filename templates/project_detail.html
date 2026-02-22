@@ -1,0 +1,1349 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.title }} - Burhan Ahmed{% endblock %}
+
+{% block head %}
+{{ super() }}
+
+<!-- Fallback styles to ensure compatibility -->
+<style>
+    :root {
+        --primary: #000000;
+        --secondary: #ffffff;
+        --background: #ffffff;
+        --text: #1a1a1a;
+        --accent: #333333;
+        --font-family: 'Poppins', sans-serif;
+    }
+
+    .project-hero {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(5px);
+        border-bottom: 1px solid #eaeaea;
+    }
+
+    .dark-mode .project-hero {
+        background: rgba(10, 10, 10, 0.95);
+        border-bottom-color: #2a2a2a;
+    }
+
+    .project-section .section-image {
+        border: 2px solid var(--primary);
+    }
+
+    .featured-badge {
+        background: var(--primary);
+        color: var(--secondary);
+    }
+
+    .btn, .btn.magnetic {
+        background: var(--primary);
+        color: var(--secondary);
+        border: 2px solid var(--primary);
+    }
+
+    .btn-outline, .btn-outline.magnetic {
+        background: transparent;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+    }
+
+    .btn-outline:hover, .btn-outline.magnetic:hover {
+        background: var(--primary);
+        color: var(--secondary);
+    }
+
+    .dark-mode .btn-outline,
+    .dark-mode .btn-outline.magnetic {
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .project-title, .section-title {
+        color: var(--primary);
+    }
+
+    .dark-mode .project-title,
+    .dark-mode .section-title {
+        color: var(--primary);
+    }
+
+    .back-link, .nav-link {
+        color: var(--primary);
+    }
+
+    .nav-link {
+        border-color: var(--primary);
+    }
+
+    .nav-link:hover {
+        background: var(--primary);
+        color: var(--secondary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Project data for reference -->
+{% if project %}
+<script id="project-data" type="application/json">
+{
+    "id": {{ project.id }},
+    "title": {{ project.title|tojson }},
+    "description": {{ project.description|tojson }},
+    "live_link": {{ project.live_link|tojson }},
+    "github_link": {{ project.github_link|tojson }},
+    "sections": [
+        {% for section in sections %}
+        {
+            "title": {{ section.section_title|tojson }},
+            "content": {{ section.content|tojson }}
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ]
+}
+</script>
+{% endif %}
+
+<!-- Particles Canvas for this page -->
+<canvas id="project-particles" class="particles-canvas" 
+        data-particles="true" 
+        data-particle-count="50" 
+        data-min-distance="100"
+        data-particle-color="#888888" 
+        data-line-color="#aaaaaa"
+        data-connect-with-mouse="true"></canvas>
+
+<!-- ========== MAIN PROJECT CONTENT ========== -->
+
+<!-- Project Hero Section -->
+<section class="project-hero slide-in-right" data-animate="true">
+    <div class="container">
+        <div class="project-hero-content">
+            <a href="{{ url_for('main.projects') }}" class="back-link">
+                <svg class="icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Back to Projects
+            </a>
+            
+            <h1 class="project-title">{{ project.title }}</h1>
+            <p class="project-description">{{ project.description }}</p>
+            
+            <div class="project-actions">
+                {% if project.live_link %}
+                <a href="{{ project.live_link }}" target="_blank" class="btn magnetic">
+                    <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    View Live Demo
+                </a>
+                {% endif %}
+                
+                {% if project.github_link %}
+                <a href="{{ project.github_link }}" target="_blank" class="btn-outline magnetic">
+                    <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                    View on GitHub
+                </a>
+                {% endif %}
+                
+                <!-- ========== ASK WITH AI BUTTON ========== -->
+                <a href="{{ url_for('main.ai_assistant') }}?project={{ project.id }}" class="btn-outline magnetic ai-assistant-btn">
+                    <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 16v-4M12 8h.01" stroke-linecap="round"></path>
+                    </svg>
+                    Ask with AI
+                </a>
+            </div>
+            
+            <!-- Project metadata -->
+            <div class="project-meta">
+                <span class="meta-item">
+                    <i class="far fa-calendar-alt"></i>
+                    Created: {{ project.created_at.strftime('%B %d, %Y') if project.created_at else 'N/A' }}
+                </span>
+                {% if project.updated_at and project.updated_at != project.created_at %}
+                <span class="meta-item">
+                    <i class="far fa-edit"></i>
+                    Updated: {{ project.updated_at.strftime('%B %d, %Y') }}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Gallery Button (if multiple images) -->
+{% set image_count = sections|selectattr('image')|list|length %}
+<div class="gallery-section">
+    <div class="container">
+        <!-- Featured Badge moved here, above the gallery button -->
+        {% if project.is_featured %}
+        <div class="featured-badge">
+            <i class="fas fa-star mr-2"></i>Featured Project
+        </div>
+        {% endif %}
+        
+        {% if image_count > 1 %}
+        <button class="btn-outline magnetic view-gallery-btn" onclick="openGallerySlider()">
+            <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                <line x1="23" y1="6" x2="20" y2="6"></line>
+                <line x1="16" y1="3" x2="16" y2="6"></line>
+                <circle cx="9" cy="9" r="2"></circle>
+                <path d="M7 21l5-5 3 3 5-5"></path>
+            </svg>
+            View Gallery ({{ image_count }} images)
+        </button>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Project Sections - with smaller images and alternate layout -->
+<section class="project-sections">
+    <div class="container">
+        {% for section in sections %}
+        <div class="project-section fade-up" data-aos="fade-up" data-delay="{{ loop.index0 * 100 }}">
+            <div class="section-content">
+                <h2 class="section-title">{{ section.section_title }}</h2>
+                <div class="section-text">
+                    {{ section.content|safe }}
+                </div>
+            </div>
+            
+            {% if section.image %}
+            <div class="section-image image-zoom" onclick="openProjectImageModal('/static/{{ section.image }}', '{{ section.section_title|replace("'", "\\'")|safe }}', {{ loop.index0 }})">
+                <img src="/static/{{ section.image }}" 
+                     alt="{{ section.section_title }}"
+                     loading="lazy"
+                     style="width: 100%; height: auto; max-height: 400px; object-fit: contain; cursor: pointer;">
+                <div class="image-overlay">
+                    <svg class="zoom-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="white" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        <line x1="11" y1="8" x2="11" y2="14"></line>
+                        <line x1="8" y1="11" x2="14" y2="11"></line>
+                    </svg>
+                </div>
+                {% if image_count > 1 %}
+                <div class="image-counter">{{ loop.index }}/{{ image_count }}</div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Project Navigation -->
+{% if next_project or prev_project %}
+<section class="project-navigation fade-up">
+    <div class="container">
+        <div class="nav-links">
+            {% if prev_project %}
+            <a href="{{ url_for('main.project_detail', project_id=prev_project.id) }}" class="nav-link prev">
+                <span class="nav-direction">
+                    <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Previous Project
+                </span>
+                <span class="nav-title">{{ prev_project.title }}</span>
+            </a>
+            {% endif %}
+            
+            {% if next_project %}
+            <a href="{{ url_for('main.project_detail', project_id=next_project.id) }}" class="nav-link next">
+                <span class="nav-direction">
+                    Next Project
+                    <svg class="icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 5"></polyline>
+                    </svg>
+                </span>
+                <span class="nav-title">{{ next_project.title }}</span>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Image Modal with Slider -->
+<div class="image-modal" id="projectImageModal">
+    <span class="close-modal" onclick="closeProjectImageModal()">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    </span>
+    
+    <!-- Slider Navigation Arrows -->
+    <button class="modal-nav modal-prev" onclick="changeSlide(-1)" aria-label="Previous image">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+    </button>
+    
+    <button class="modal-nav modal-next" onclick="changeSlide(1)" aria-label="Next image">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+    </button>
+    
+    <!-- Image Container -->
+    <div class="modal-image-container">
+        <img class="modal-content" id="projectModalImage">
+    </div>
+    
+    <!-- Caption and Counter -->
+    <div class="modal-footer">
+        <div class="modal-caption" id="projectModalCaption"></div>
+        <div class="modal-counter" id="projectModalCounter"></div>
+    </div>
+</div>
+
+<style>
+/* Project Hero Section - Clean White/Black */
+.project-hero {
+    padding: 120px 0 80px;
+    background: #ffffff;
+    border-bottom: 1px solid #eaeaea;
+    position: relative;
+    z-index: 2;
+}
+
+.dark-mode .project-hero {
+    background: #0a0a0a;
+    border-bottom-color: #2a2a2a;
+}
+
+.project-hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 3;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 30px;
+    color: #1a1a1a;
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    font-weight: 500;
+}
+
+.dark-mode .back-link {
+    color: #ffffff;
+}
+
+.back-link:hover {
+    opacity: 1;
+}
+
+.back-link .icon {
+    transition: transform 0.3s ease;
+}
+
+.back-link:hover .icon {
+    transform: translateX(-4px);
+}
+
+.project-title {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    color: #1a1a1a;
+}
+
+.dark-mode .project-title {
+    color: #ffffff;
+}
+
+.project-description {
+    color: #666666;
+    font-size: 1.2rem;
+    line-height: 1.8;
+}
+
+.dark-mode .project-description {
+    color: #aaaaaa;
+}
+
+.project-meta {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    color: #888888;
+    font-size: 0.9rem;
+}
+
+.dark-mode .project-meta {
+    color: #777777;
+}
+
+.meta-item i {
+    margin-right: 6px;
+}
+
+.project-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+
+.btn, .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn {
+    background: #1a1a1a;
+    color: #ffffff;
+    border: 2px solid #1a1a1a;
+}
+
+.dark-mode .btn {
+    background: #ffffff;
+    color: #1a1a1a;
+    border-color: #ffffff;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #1a1a1a;
+    border: 2px solid #1a1a1a;
+}
+
+.dark-mode .btn-outline {
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+.btn:hover, .btn-outline:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.btn-outline:hover {
+    background: #1a1a1a;
+    color: #ffffff;
+}
+
+.dark-mode .btn-outline:hover {
+    background: #ffffff;
+    color: #1a1a1a;
+}
+
+/* AI Assistant Button - Special styling */
+.ai-assistant-btn {
+    border-color: #888888 !important;
+    color: #555555 !important;
+}
+
+.dark-mode .ai-assistant-btn {
+    border-color: #aaaaaa !important;
+    color: #cccccc !important;
+}
+
+.ai-assistant-btn:hover {
+    background: #555555 !important;
+    color: #ffffff !important;
+    border-color: #555555 !important;
+}
+
+.dark-mode .ai-assistant-btn:hover {
+    background: #cccccc !important;
+    color: #000000 !important;
+    border-color: #cccccc !important;
+}
+
+.btn-icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Gallery Section */
+.gallery-section {
+    padding: 40px 0 0;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+/* Featured badge styling - Updated for gallery section */
+.featured-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #1a1a1a;
+    color: #ffffff;
+    padding: 8px 20px;
+    border-radius: 50px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    animation: fadeInDown 0.5s ease-out;
+}
+
+.dark-mode .featured-badge {
+    background: #ffffff;
+    color: #1a1a1a;
+}
+
+.featured-badge i {
+    font-size: 0.8rem;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.view-gallery-btn {
+    background: transparent;
+    border: 2px solid #1a1a1a;
+    color: #1a1a1a;
+    padding: 12px 30px;
+    margin-top: 10px;
+}
+
+.dark-mode .view-gallery-btn {
+    border-color: #ffffff;
+    color: #ffffff;
+}
+
+.view-gallery-btn:hover {
+    background: #1a1a1a;
+    color: #ffffff;
+}
+
+.dark-mode .view-gallery-btn:hover {
+    background: #ffffff;
+    color: #1a1a1a;
+}
+
+/* Project Sections */
+.project-sections {
+    padding: 80px 0;
+    position: relative;
+    z-index: 2;
+    background: transparent;
+}
+
+.project-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg, 4rem);
+    margin-bottom: var(--spacing-xl, 8rem);
+    align-items: center;
+    position: relative;
+    z-index: 3;
+}
+
+/* Make images smaller */
+.project-section .section-image {
+    position: relative;
+    max-width: 85%;
+    margin: 0 auto;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #f5f5f5;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dark-mode .project-section .section-image {
+    background: #1a1a1a;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.project-section .section-image:hover .image-overlay {
+    opacity: 1;
+}
+
+.zoom-icon {
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+.project-section .section-image:hover .zoom-icon {
+    transform: scale(1);
+}
+
+/* Image counter badge */
+.image-counter {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    z-index: 2;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Section title styling */
+.section-title {
+    color: #1a1a1a;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+.dark-mode .section-title {
+    color: #ffffff;
+}
+
+.section-text {
+    color: #666666;
+    line-height: 1.8;
+}
+
+.dark-mode .section-text {
+    color: #aaaaaa;
+}
+
+.section-text p {
+    margin-bottom: 1rem;
+    color: #666666;
+}
+
+.dark-mode .section-text p {
+    color: #aaaaaa;
+}
+
+.section-text h1, 
+.section-text h2, 
+.section-text h3, 
+.section-text h4, 
+.section-text h5, 
+.section-text h6 {
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+}
+
+.dark-mode .section-text h1,
+.dark-mode .section-text h2,
+.dark-mode .section-text h3,
+.dark-mode .section-text h4,
+.dark-mode .section-text h5,
+.dark-mode .section-text h6 {
+    color: #ffffff;
+}
+
+/* Alternate layout - ensure even sections have image on left */
+.project-section:nth-child(even) {
+    direction: rtl;
+}
+
+.project-section:nth-child(even) .section-content {
+    direction: ltr;
+}
+
+.project-section:nth-child(even) .section-image {
+    direction: ltr;
+}
+
+/* Even smaller images for mobile */
+@media (max-width: 768px) {
+    .project-section {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .project-section .section-image {
+        max-width: 95%;
+    }
+    
+    .project-section:nth-child(even) {
+        direction: ltr;
+    }
+    
+    .project-title {
+        font-size: 2.5rem;
+    }
+    
+    .project-actions {
+        flex-direction: column;
+    }
+    
+    .project-meta {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .featured-badge {
+        margin-bottom: 15px;
+        padding: 6px 16px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Image hover effect */
+.project-section .section-image:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.dark-mode .project-section .section-image:hover {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* Project Navigation styling */
+.project-navigation {
+    padding: 60px 0 40px;
+    border-top: 1px solid #eaeaea;
+    background: #fafafa;
+    position: relative;
+    z-index: 2;
+}
+
+.dark-mode .project-navigation {
+    border-top-color: #2a2a2a;
+    background: #111111;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.nav-link {
+    flex: 1;
+    text-decoration: none;
+    color: #1a1a1a;
+    padding: 20px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+}
+
+.dark-mode .nav-link {
+    color: #ffffff;
+    background: #1a1a1a;
+    border-color: #2a2a2a;
+}
+
+.nav-link:hover {
+    background: #f5f5f5;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.dark-mode .nav-link:hover {
+    background: #222222;
+}
+
+.nav-link.next {
+    text-align: right;
+}
+
+.nav-direction {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #666666;
+    margin-bottom: 8px;
+}
+
+.dark-mode .nav-direction {
+    color: #aaaaaa;
+}
+
+.nav-link.next .nav-direction {
+    justify-content: flex-end;
+}
+
+.nav-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.nav-direction .icon {
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover .nav-direction .icon {
+    transform: translateX(-4px);
+}
+
+.nav-link.next:hover .nav-direction .icon {
+    transform: translateX(4px);
+}
+
+/* Particles canvas specific to project page */
+#project-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.6;
+}
+
+/* Ensure content is above particles */
+.project-hero,
+.gallery-section,
+.project-sections,
+.project-navigation {
+    position: relative;
+    z-index: 2;
+    background: transparent;
+}
+
+/* Add slight background to sections for readability */
+.project-hero {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
+}
+
+.dark-mode .project-hero {
+    background: rgba(10, 10, 10, 0.95);
+}
+
+.project-navigation {
+    background: rgba(250, 250, 250, 0.95);
+    backdrop-filter: blur(5px);
+}
+
+.dark-mode .project-navigation {
+    background: rgba(17, 17, 17, 0.95);
+}
+
+/* Image Modal with Slider - UPDATED STYLES */
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.98);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-modal.active {
+    display: flex;
+    opacity: 1;
+}
+
+.close-modal {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    color: #ffffff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10000;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.close-modal:hover {
+    transform: rotate(90deg);
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Modal Navigation Arrows */
+.modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10000;
+    color: white;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.modal-nav:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-50%) scale(1.1);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.modal-prev {
+    left: 30px;
+}
+
+.modal-next {
+    right: 30px;
+}
+
+.modal-nav svg {
+    width: 30px;
+    height: 30px;
+    stroke: white;
+}
+
+/* Modal Image Container */
+.modal-image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 100px;
+}
+
+.modal-content {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+    animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Modal Footer - UPDATED for better mobile display */
+.modal-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+    padding: 30px 20px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    color: white;
+    z-index: 9999;
+}
+
+.modal-caption {
+    font-size: 1.2rem;
+    font-weight: 500;
+    max-width: 70%;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    line-height: 1.4;
+}
+
+.modal-counter {
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 6px 15px;
+    border-radius: 30px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Responsive styles for modal */
+@media (max-width: 768px) {
+    .modal-image-container {
+        padding: 60px 20px;
+    }
+    
+    .modal-nav {
+        width: 45px;
+        height: 45px;
+        top: auto;
+        bottom: 100px;
+        transform: none;
+    }
+    
+    .modal-prev {
+        left: 20px;
+    }
+    
+    .modal-next {
+        right: 20px;
+    }
+    
+    .modal-nav:hover {
+        transform: scale(1.1);
+    }
+    
+    .close-modal {
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 20px;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.95) 50%);
+    }
+    
+    .modal-caption {
+        max-width: 100%;
+        text-align: center;
+        font-size: 1rem;
+        margin-bottom: 5px;
+        word-wrap: break-word;
+        width: 100%;
+        padding: 0 10px;
+    }
+    
+    .modal-counter {
+        font-size: 0.9rem;
+        padding: 4px 12px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    .modal-image-container {
+        padding: 50px 10px;
+    }
+    
+    .modal-nav {
+        width: 40px;
+        height: 40px;
+        bottom: 90px;
+    }
+    
+    .modal-nav svg {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .modal-footer {
+        padding: 15px;
+    }
+    
+    .modal-caption {
+        font-size: 0.9rem;
+        line-height: 1.3;
+    }
+    
+    .modal-counter {
+        font-size: 0.8rem;
+        padding: 3px 10px;
+    }
+}
+</style>
+
+<!-- Image Modal JavaScript - UPDATED WITH SLIDER -->
+<script>
+// Store all project images
+const projectImages = [
+    {% for section in sections %}
+        {% if section.image %}
+        {
+            src: '/static/{{ section.image }}',
+            caption: '{{ section.section_title|replace("'", "\\'")|safe }}'
+        }{% if not loop.last %},{% endif %}
+        {% endif %}
+    {% endfor %}
+];
+
+let currentImageIndex = 0;
+
+// Open modal with specific image
+function openProjectImageModal(src, caption, index) {
+    console.log('Opening modal with:', src, caption, index);
+    const modal = document.getElementById('projectImageModal');
+    const modalImg = document.getElementById('projectModalImage');
+    const modalCaption = document.getElementById('projectModalCaption');
+    const modalCounter = document.getElementById('projectModalCounter');
+    
+    if (!modal || !modalImg || !modalCaption) {
+        console.error('Modal elements not found!');
+        return;
+    }
+    
+    // Set current index
+    currentImageIndex = index;
+    
+    // Update modal content
+    modalImg.src = src;
+    modalCaption.textContent = caption || '';
+    
+    // Update counter
+    if (projectImages.length > 1) {
+        modalCounter.textContent = `${index + 1} / ${projectImages.length}`;
+    } else {
+        modalCounter.textContent = '';
+    }
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Open gallery slider (start from first image)
+function openGallerySlider() {
+    if (projectImages.length > 0) {
+        openProjectImageModal(projectImages[0].src, projectImages[0].caption, 0);
+    }
+}
+
+// Close modal
+function closeProjectImageModal() {
+    const modal = document.getElementById('projectImageModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// Change slide
+function changeSlide(direction) {
+    if (projectImages.length === 0) return;
+    
+    currentImageIndex = (currentImageIndex + direction + projectImages.length) % projectImages.length;
+    const modalImg = document.getElementById('projectModalImage');
+    const modalCaption = document.getElementById('projectModalCaption');
+    const modalCounter = document.getElementById('projectModalCounter');
+    
+    modalImg.src = projectImages[currentImageIndex].src;
+    modalCaption.textContent = projectImages[currentImageIndex].caption;
+    modalCounter.textContent = `${currentImageIndex + 1} / ${projectImages.length}`;
+    
+    // Add animation class
+    modalImg.classList.add('slide-change');
+    setTimeout(() => {
+        modalImg.classList.remove('slide-change');
+    }, 200);
+}
+
+// Initialize modal when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing project image modal with slider');
+    console.log('Project images:', projectImages);
+    
+    const modal = document.getElementById('projectImageModal');
+    if (!modal) {
+        console.error('Modal element not found in DOM!');
+        return;
+    }
+    
+    // Close modal when clicking outside the image container
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal || e.target.classList.contains('modal-image-container')) {
+            closeProjectImageModal();
+        }
+    });
+    
+    // Close with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('projectImageModal');
+            if (modal && modal.classList.contains('active')) {
+                closeProjectImageModal();
+            }
+        }
+        
+        // Left/right arrow navigation
+        if (e.key === 'ArrowLeft') {
+            const modal = document.getElementById('projectImageModal');
+            if (modal && modal.classList.contains('active') && projectImages.length > 1) {
+                changeSlide(-1);
+            }
+        }
+        
+        if (e.key === 'ArrowRight') {
+            const modal = document.getElementById('projectImageModal');
+            if (modal && modal.classList.contains('active') && projectImages.length > 1) {
+                changeSlide(1);
+            }
+        }
+    });
+    
+    // Touch swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    modal.addEventListener('touchstart', function(e) {
+        touchStartX = e.changedTouches[0].screenX;
+    }, false);
+    
+    modal.addEventListener('touchend', function(e) {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, false);
+    
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        if (touchEndX < touchStartX - swipeThreshold) {
+            // Swipe left
+            if (projectImages.length > 1) changeSlide(1);
+        }
+        if (touchEndX > touchStartX + swipeThreshold) {
+            // Swipe right
+            if (projectImages.length > 1) changeSlide(-1);
+        }
+    }
+});
+
+// Animation controller
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize AOS if available
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100,
+            delay: 100
+        });
+    }
+    
+    // Hero section slide-in animation
+    const heroSection = document.querySelector('.project-hero');
+    if (heroSection) {
+        heroSection.classList.add('animate-in');
+    }
+    
+    // Set up intersection observer for fade-up animations
+    const fadeElements = document.querySelectorAll('.fade-up:not(.aos-animate)');
+    
+    if (fadeElements.length > 0 && !window.AOS) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    // Add staggered delay if data-delay attribute exists
+                    const delay = entry.target.getAttribute('data-delay') || 0;
+                    if (delay) {
+                        entry.target.style.transitionDelay = delay + 'ms';
+                    }
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        
+        fadeElements.forEach(el => observer.observe(el));
+    }
+});
+
+// Add scroll animation for elements without AOS
+window.addEventListener('scroll', function() {
+    const fadeElements = document.querySelectorAll('.fade-up:not(.visible):not(.aos-animate)');
+    
+    fadeElements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        
+        if (rect.top < windowHeight * 0.9) {
+            el.classList.add('visible');
+            
+            // Add staggered delay if data-delay attribute exists
+            const delay = el.getAttribute('data-delay') || 0;
+            if (delay) {
+                el.style.transitionDelay = delay + 'ms';
+            }
+        }
+    });
+});
+
+// Trigger initial check for elements in view
+setTimeout(() => {
+    window.dispatchEvent(new Event('scroll'));
+}, 100);
+
+// Initialize particles if not already done
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof ParticlesNetwork !== 'undefined') {
+        // Check if particles canvas exists and initialize it
+        const canvas = document.getElementById('project-particles');
+        if (canvas && !canvas.particlesInstance) {
+            const options = {
+                particleCount: parseInt(canvas.dataset.particleCount) || 50,
+                minDistance: parseInt(canvas.dataset.minDistance) || 100,
+                particleColor: canvas.dataset.particleColor || '#888888',
+                lineColor: canvas.dataset.lineColor || '#aaaaaa',
+                particleSize: 2,
+                speed: 0.3,
+                connectWithMouse: canvas.dataset.connectWithMouse !== 'false'
+            };
+            
+            canvas.particlesInstance = new ParticlesNetwork('project-particles', options);
+        }
+    }
+});
+</script>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

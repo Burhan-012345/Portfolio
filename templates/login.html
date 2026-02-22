@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Burhan Ahmed Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Override the purple gradient and create minimal black/white theme */
+        body.login-page {
+            background: #f5f5f5 !important;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        body.dark-mode.login-page {
+            background: #1a1a1a !important;
+        }
+
+        .login-container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #eaeaea;
+        }
+
+        .dark-mode .login-container {
+            background: #2d2d2d;
+            border-color: #404040;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-container h1 {
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #000000;
+            letter-spacing: -0.5px;
+        }
+
+        .dark-mode .login-container h1 {
+            color: #ffffff;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #333333;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .dark-mode .form-group label {
+            color: #e0e0e0;
+        }
+
+        .form-group input {
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            color: #333333;
+            width: 100%;
+        }
+
+        .dark-mode .form-group input {
+            background: #404040;
+            border-color: #555555;
+            color: #ffffff;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode .form-group input:focus {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #999999;
+        }
+
+        .dark-mode .form-group input::placeholder {
+            color: #888888;
+        }
+
+        /* Password toggle */
+        .password-input-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666666;
+            z-index: 10;
+        }
+
+        .dark-mode .password-toggle {
+            color: #b0b0b0;
+        }
+
+        /* Buttons */
+        .btn {
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #333333;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .dark-mode .btn {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .dark-mode .btn:hover {
+            background: #e0e0e0;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Back link */
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #666666;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: #000000;
+        }
+
+        .dark-mode .back-link {
+            color: #b0b0b0;
+        }
+
+        .dark-mode .back-link:hover {
+            color: #ffffff;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            border-left: 3px solid transparent;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border-left-color: #b91c1c;
+        }
+
+        .dark-mode .alert-error {
+            background: #2d1a1a;
+            color: #ff6b6b;
+            border-left-color: #ff6b6b;
+        }
+
+        .alert-success {
+            background: #f0f9f0;
+            color: #2c662d;
+            border-left-color: #2c662d;
+        }
+
+        .dark-mode .alert-success {
+            background: #1a2d1a;
+            color: #6bff6b;
+            border-left-color: #6bff6b;
+        }
+
+        /* Remove any purple gradients */
+        .login-page::before,
+        .login-page::after {
+            display: none;
+        }
+
+        /* Fade-in animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+            
+            .login-container h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode login-page">
+    <div class="login-container fade-in">
+        <h1>Admin Login</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" action="{{ url_for('main.login') }}" class="login-form">
+            <!-- CSRF Token -->
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+            
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-input-wrapper">
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <span class="password-toggle" onclick="togglePassword()">
+                        <i class="fas fa-eye" id="toggleIcon"></i>
+                    </span>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn magnetic">Login</button>
+        </form>
+        
+        <a href="/" class="back-link">← Back to Portfolio</a>
+    </div>
+
+    <!-- Theme toggle script (optional) -->
+    <script>
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.remove('light-mode');
+            document.body.classList.add('dark-mode');
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Magnetic button effect (lightweight version)
+        document.querySelectorAll('.magnetic').forEach(button => {
+            button.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width/2;
+                const y = e.clientY - rect.top - rect.height/2;
+                
+                this.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translate(0, 0)';
+            });
+        });
+    </script>
+</body>
+</html>

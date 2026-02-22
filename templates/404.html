@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="error-section">
+    <div class="container">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">Page Not Found</h2>
+        <p class="error-message">The page you're looking for doesn't exist or has been moved.</p>
+        <a href="/" class="btn magnetic">Go Back Home</a>
+    </div>
+</section>
+
+<style>
+.error-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.error-code {
+    font-size: 8rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 1rem;
+    animation: fadeIn 1s ease;
+}
+
+.error-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    animation: fadeIn 1s ease 0.2s both;
+}
+
+.error-message {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 2rem;
+    animation: fadeIn 1s ease 0.4s both;
+}
+
+.error-section .btn {
+    animation: fadeIn 1s ease 0.6s both;
+}
+
+.dark-mode .error-message {
+    color: #999;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+{% endblock %}

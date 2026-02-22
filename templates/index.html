@@ -1,0 +1,449 @@
+{% extends "base.html" %}
+
+{% block title %}Burhan Ahmed - Developer & Designer{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero" id="home">
+    <div class="container">
+        <div class="hero-content" data-aos="fade-up">
+            <h1 class="hero-title">
+                <span class="static-text">Burhan Ahmed</span>
+                <span class="typed-text"></span>
+                <span class="cursor">&nbsp;</span>
+            </h1>
+            
+            <!-- Social Links & Download CV - Moved here -->
+            <div class="hero-social-links">
+                <a href="https://www.instagram.com/_.bur._.han._?igsh=MW02dnh3eXNrdTZuZg==" target="_blank" rel="noopener noreferrer" class="social-link magnetic">
+                    <svg class="icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                    <span>Instagram</span>
+                </a>
+                <a href="https://github.com/Burhan-012345?tab=repositories" target="_blank" rel="noopener noreferrer" class="social-link magnetic">
+                    <svg class="icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                    <span>GitHub</span>
+                </a>
+                <a href="{{ url_for('static', filename='cv.pdf') }}" 
+                   class="social-link magnetic" 
+                   download="Burhan_Ahmed_CV.pdf"
+                   title="Download CV">
+                    <svg class="icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    <span>Download CV</span>
+                </a>
+            </div>
+
+            <p class="hero-subtitle rotating-text">
+                <span class="word">Developer</span>
+                <span class="word">Designer</span>
+                <span class="word">Creator</span>
+            </p>
+            <p class="hero-description">
+                I create meaningful digital experiences that combine beautiful design with powerful functionality.
+                Specializing in modern web technologies and creative solutions.
+            </p>
+            <div class="hero-cta">
+                <a href="#work" class="btn magnetic">View Work</a>
+                <a href="#contact" class="btn-outline magnetic">Get in Touch</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Work Section -->
+<section id="work" class="work-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">Featured Work</h2>
+            <p class="section-subtitle">Some of my best projects</p>
+        </div>
+        
+        <!-- Featured Projects -->
+        <div class="featured-grid">
+            {% for project in featured_projects %}
+            <div class="featured-card" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+                <div class="featured-card-image">
+                    {% if project.sections and project.sections[0] and project.sections[0].image %}
+                    <img src="/static/{{ project.sections[0].image }}" alt="{{ project.title }}" loading="lazy">
+                    {% else %}
+                    <div class="placeholder-image"></div>
+                    {% endif %}
+                    {% if project.is_featured %}
+                    <span class="featured-badge">Featured</span>
+                    {% endif %}
+                </div>
+                <div class="featured-card-content">
+                    <h3>{{ project.title }}</h3>
+                    <p>{{ project.description[:200] }}{% if project.description|length > 200 %}...{% endif %}</p>
+                    <div class="featured-card-links">
+                        <a href="{{ url_for('main.project_detail', project_id=project.id) }}" class="card-link">View Project <span class="icon-arrow-right"></span></a>
+                        {% if project.live_link %}
+                        <a href="{{ project.live_link }}" target="_blank" class="card-link external">Live Demo <span class="icon-external"></span></a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Other Projects (if any) -->
+        {% if other_projects %}
+        <div class="other-projects" data-aos="fade-up">
+            <h3 class="other-projects-title">More Projects</h3>
+            <div class="mini-grid">
+                {% for project in other_projects[:3] %}
+                <div class="mini-card">
+                    <h4>{{ project.title }}</h4>
+                    <p>{{ project.description[:100] }}...</p>
+                    <a href="{{ url_for('main.project_detail', project_id=project.id) }}" class="mini-link">Details <span class="icon-arrow-right"></span></a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- View All Button -->
+        <div class="view-all-container" data-aos="fade-up">
+            <a href="{{ url_for('main.projects') }}" class="btn magnetic">View All Projects</a>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="about-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">About Me</h2>
+            <p class="section-subtitle">Who I am and what I do</p>
+        </div>
+        
+        <div class="about-content">
+            <div class="about-text" data-aos="fade-right">
+                <p class="lead">I'm a passionate developer and designer with 3+ years of experience creating digital experiences that people love.</p>
+                <p>My journey in tech started when I built my first website at 15. Since then, I've worked with startups and established companies to bring their ideas to life. I believe in clean code, thoughtful design, and creating products that make a difference.</p>
+                <p>When I'm not coding, you can find me hiking, reading sci-fi novels, or experimenting with new technologies.</p>
+                
+                <div class="skills">
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">JavaScript</span>
+                    <span class="skill-tag">React</span>
+                    <span class="skill-tag">Flask</span>
+                    <span class="skill-tag">HTML/CSS</span>
+                    <span class="skill-tag">UI/UX Design</span>
+                </div>
+            </div>
+            
+            <div class="about-image" data-aos="fade-left">
+                <img src="{{ url_for('static', filename='icons/profile.jpg') }}" alt="Burhan Ahmed" class="profile-image">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="contact-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">Get in Touch</h2>
+            <p class="section-subtitle">Let's work together</p>
+        </div>
+        
+        <div class="contact-content">
+            <div class="contact-info" data-aos="fade-right">
+                <h3>Let's talk about your project</h3>
+                <p>I'm always interested in hearing about new opportunities and exciting projects. Whether you have a question or just want to say hi, feel free to reach out!</p>
+                
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <span class="contact-icon">
+                            <svg class="icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </span>
+                        <span>burhan.webdev@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">
+                            <svg class="icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a1.999 1.999 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.574 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                        </span>
+                        <span>+91 7019670262</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">
+                            <svg class="icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </span>
+                        <span>Karnataka, Bangalore</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-form-container" data-aos="fade-left">
+                <!-- Contact Form (Initially Hidden) -->
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="Your Message" rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="btn magnetic">Send Message</button>
+                </form>
+                <div class="contact-form-message"></div>
+                
+                <!-- Newsletter alternative (Initially Visible) -->
+                <div class="newsletter-alt">
+                    <p>Or subscribe to my newsletter for updates:</p>
+                    <button class="btn-outline newsletter-trigger contact-newsletter-btn">
+                        <span class="btn-icon">
+                            <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </span>
+                        Subscribe to Newsletter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-info">
+                <p>&copy; 2024 Burhan Ahmed. All rights reserved.</p>
+            </div>
+            <div class="footer-social">
+                <a href="https://www.instagram.com/_.bur._.han._?igsh=MW02dnh3eXNrdTZuZg==" target="_blank" rel="noopener noreferrer">
+                    <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                    Instagram
+                </a>
+                <a href="https://github.com/Burhan-012345?tab=repositories" target="_blank" rel="noopener noreferrer">
+                    <svg class="icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                    GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+/* Additional styles for the new hero social links */
+.hero-social-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+}
+
+.social-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    border-color: var(--accent-color, #007bff);
+}
+
+.social-link .icon {
+    transition: transform 0.3s ease;
+}
+
+.social-link:hover .icon {
+    transform: scale(1.1);
+}
+
+/* Download CV button now matches exactly with Instagram and GitHub buttons */
+/* Removed the special background color to match the others */
+
+/* Footer social links */
+.footer-social {
+    display: flex;
+    gap: 1rem;
+}
+
+.footer-social a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.footer-social a:hover {
+    opacity: 1;
+}
+
+/* Ensure download attribute works properly */
+a[download] {
+    -webkit-appearance: none;
+    appearance: none;
+}
+</style>
+
+<!-- Add JavaScript to ensure download works in all browsers -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure download button works properly
+    const downloadBtn = document.querySelector('a[download]');
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', function(e) {
+            // The download attribute should handle this automatically
+            // This is just a fallback for any browser issues
+            const link = this.href;
+            const fileName = this.getAttribute('download') || 'Burhan_Ahmed_CV.pdf';
+            
+            // Optional: Add tracking or analytics here
+            console.log('CV download initiated:', fileName);
+        });
+    }
+});
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize AOS
+    AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100
+    });
+    
+    // Contact form handling
+    document.getElementById('contactForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const form = this;
+        const formData = {
+            name: form.querySelector('input[type="text"]').value,
+            email: form.querySelector('input[type="email"]').value,
+            message: form.querySelector('textarea').value
+        };
+        
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        const messageDiv = document.querySelector('.contact-form-message');
+        
+        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = true;
+        
+        try {
+            const response = await fetch('/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const data = await response.json();
+            
+            messageDiv.textContent = data.message;
+            messageDiv.className = `contact-form-message ${data.success ? 'success' : 'error'}`;
+            
+            if (data.success) {
+                form.reset();
+                // Hide form and show newsletter alt again after successful submission
+                setTimeout(() => {
+                    form.style.display = 'none';
+                    document.querySelector('.newsletter-alt').style.display = 'block';
+                    messageDiv.className = 'contact-form-message';
+                }, 3000);
+            }
+        } catch (error) {
+            messageDiv.textContent = 'An error occurred. Please try again.';
+            messageDiv.className = 'contact-form-message error';
+        } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+
+    // Newsletter button functionality - FIXED VERSION
+    document.addEventListener('DOMContentLoaded', function() {
+        const contactNewsletterBtn = document.querySelector('.contact-newsletter-btn');
+        const contactForm = document.getElementById('contactForm');
+        const newsletterAlt = document.querySelector('.newsletter-alt');
+        const contactSection = document.getElementById('contact');
+        
+        if (contactNewsletterBtn) {
+            contactNewsletterBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation(); // Prevent the modal from opening
+                
+                // Hide the newsletter section
+                if (newsletterAlt) {
+                    newsletterAlt.style.display = 'none';
+                }
+                
+                // Show the contact form
+                if (contactForm) {
+                    contactForm.style.display = 'flex';
+                    contactForm.style.flexDirection = 'column';
+                    contactForm.style.gap = 'var(--spacing-md)';
+                    
+                    // Smooth scroll to contact section
+                    if (contactSection) {
+                        contactSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    
+                    // Focus on the name input
+                    const nameInput = contactForm.querySelector('input[type="text"]');
+                    if (nameInput) {
+                        setTimeout(() => nameInput.focus(), 500);
+                    }
+                }
+            });
+        }
+
+        // Handle other newsletter triggers (like in hero section) - they should open modal
+        const otherNewsletterTriggers = document.querySelectorAll('.newsletter-trigger:not(.contact-newsletter-btn)');
+        otherNewsletterTriggers.forEach(trigger => {
+            trigger.addEventListener('click', function(e) {
+            });
+        });
+    });
+</script>
+{% endblock %}
